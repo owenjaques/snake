@@ -145,7 +145,7 @@ function init(){
 function start(){
 	//so that the interval is not set multiple times making it faster and faster
 	if(!started){
-		interval = setInterval(main, 100);
+		interval = setInterval(main, 60);
 		started = true;
 	}
 }
