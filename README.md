@@ -1,5 +1,4 @@
 # snake
-
 A very simple snake game.
 My first real attempt at javascript.
 
