@@ -1,7 +1,11 @@
-var canvas, ctx, dx, dy, squareSize, score, screenWidth, screenHeight, snake, food, interval, started, gameOver;
+var canvas, ctx, dx, dy, squareSize, score, screenWidth, screenHeight, food, interval, started, gameOver, snake1, snakes;
+
+function Snake(pos){
+	this.pos = pos;
+}
 
 //draws on canvas
-function draw(){
+function draw(snakes){
 	//draws background
 	ctx.fillStyle = "aqua";
 	ctx.strokeStyle = "grey";
@@ -14,24 +18,26 @@ function draw(){
 	//draws snake
 	ctx.fillStyle = "lightgreen";
 	ctx.strokeStyle = "darkgreen";
-	for(i = 0; i < snake.length; i++){
-		ctx.fillRect(snake[i].x, snake[i].y, squareSize, squareSize);
-		ctx.strokeRect(snake[i].x, snake[i].y, squareSize, squareSize);
+	for(j = 0; j < snakes.length; j++){
+		for(i = 0; i < snakes[j].pos.length; i++){
+			ctx.fillRect(snakes[j].pos[i].x, snakes[j].pos[i].y, squareSize, squareSize);
+			ctx.strokeRect(snakes[j].pos[i].x, snakes[j].pos[i].y, squareSize, squareSize);
+		}
 	}
 }
 
 //effectively moves the snake by adding the next location to a list array and popping the last element
-function moveSnake(){
-	var head = {x:snake[0].x + dx, y:snake[0].y + dy};
-	snake.unshift(head);
+function moveSnake(snake){
+	var head = {x:snake.pos[0].x + dx, y:snake.pos[0].y + dy};
+	snake.pos.unshift(head);
 
 	//if it hits food do not pop
-	if(snake[0].x == food.x && snake[0].y == food.y){
-		createFood();
+	if(snake.pos[0].x == food.x && snake.pos[0].y == food.y){
+		createFood(snake);
 		score++;
 	}
 	else {
-		snake.pop();
+		snake.pos.pop();
 	}
 }
 
@@ -66,12 +72,12 @@ function randCoor(size){
 	return Math.round((Math.random() * (size - squareSize)) / 10) * 10;
 }
 
-function createFood(){
+function createFood(snake){
 	var x = randCoor(screenWidth);
 	var y = randCoor(screenHeight);
 	//checks to make sure its not spawning food where snake is
-	for(i = 0; i < snake.length; i++){
-		if(x == snake[i].x && y == snake[i].y){
+	for(i = 0; i < snake.pos.length; i++){
+		if(x == snake.pos[i].x && y == snake.pos[i].y){
 			x = randCoor(screenWidth);
 			y = randCoor(screenHeight);
 		}
@@ -81,11 +87,11 @@ function createFood(){
 }
 
 //writes to the html
-function write(){
+function write(snake){
 	var ele = document.getElementById("snakex");
-	ele.innerHTML = snake[0].x;
+	ele.innerHTML = snake.pos[0].x;
 	ele = document.getElementById("snakey");
-	ele.innerHTML = snake[0].y;
+	ele.innerHTML = snake.pos[0].y;
 	ele = document.getElementById("foodx");
 	ele.innerHTML = food.x;
 	ele = document.getElementById("foody");
@@ -94,9 +100,9 @@ function write(){
 	ele.innerHTML = score;
 }
 
-function checkCol(){
+function checkCol(snake){
 	//checks for collision with wall
-	if(snake[0].x == -10 || snake[0].x == screenWidth || snake[0].y == -10 || snake[0].y == screenHeight){
+	if(snake.pos[0].x == -10 || snake.pos[0].x == screenWidth || snake.pos[0].y == -10 || snake.pos[0].y == screenHeight){
 		clearInterval(interval);
 		gameOver = true;
 		return;
@@ -127,7 +133,8 @@ function init(){
 	dy = score = 0;
 	screenWidth = 600;
 	screenHeight = 400;
-	snake = [ {x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}];
+	snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
+	snakes = [snake1];
 	food = {x: randCoor(screenWidth), y: randCoor(screenHeight)};
 	if(gameOver){
 		displayMessage("Game Over - Press any key to Restart");
@@ -135,7 +142,7 @@ function init(){
 		setTimeout(function() {started = false;}, 1000);
 	}
 	else {
-		draw();
+		draw(snakes);
 		displayMessage("Press any key to Start");
 		started = false;
 	}
@@ -152,10 +159,10 @@ function start(){
 
 //the function that is looped
 function main(){
-	moveSnake();
-	write();
-	checkCol();
-	draw();
+	moveSnake(snake1);
+	write(snake1);
+	checkCol(snake1);
+	draw(snakes);
 	if(gameOver)
 		init();
 }
