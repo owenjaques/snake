@@ -1,9 +1,10 @@
-var canvas, ctx, dx, dy, squareSize, score, screenWidth, screenHeight, food, interval, started, gameOver, snake1, snake2, snakes, twoPlayers;
+var canvas, ctx, dx, dy, squareSize, screenWidth, screenHeight, food, interval, started, gameOver, snake1, snake2, snakes, twoPlayers;
 
 function Snake(pos){
 	this.pos = pos;
 	this.dx = 0;
 	this.dy = -10;
+	this.score = 0;
 }
 
 //draws on canvas
@@ -34,17 +35,18 @@ function draw(snakes){
 
 //effectively moves the snake by adding the next location to a list array and popping the last element
 function moveSnake(snakes){
-	for(i = 0; i < snakes.length; i++){
-		var head = {x:snakes[i].pos[0].x + snakes[i].dx, y:snakes[i].pos[0].y + snakes[i].dy};
-		snakes[i].pos.unshift(head);
+	//had some wierd counting issue where I was getting set to 5 when the create food function was called so I switched it to k
+	for(k = 0; k < snakes.length; k++){
+		var head = {x:snakes[k].pos[0].x + snakes[k].dx, y:snakes[k].pos[0].y + snakes[k].dy};
+		snakes[k].pos.unshift(head);
 
 		//if it hits food do not pop
-		if(snakes[i].pos[0].x == food.x && snakes[i].pos[0].y == food.y){
+		if(snakes[k].pos[0].x == food.x && snakes[k].pos[0].y == food.y){
 			createFood(snakes);
-			score++;
+			snakes[k].score++;
 		}
 		else {
-			snakes[i].pos.pop();
+			snakes[k].pos.pop();
 		}
 	}
 }
@@ -128,8 +130,12 @@ function write(snake){
 	ele.innerHTML = food.x;
 	ele = document.getElementById("foody");
 	ele.innerHTML = food.y;
-	ele = document.getElementById("score");
-	ele.innerHTML = score;
+	ele = document.getElementById("score1");
+	ele.innerHTML = snake1.score;
+	if(snake2){
+		ele = document.getElementById("score2");
+		ele.innerHTML = snake2.score;
+	}
 }
 
 function checkCol(snake){
@@ -151,7 +157,7 @@ function checkCol(snake){
 	if(twoPlayers){
 		//figures out which snake called the function
 		otherSnake = (snake == snake1) ? snake2 : snake1;
-		for(i = 1; i < otherSnake.pos.length; i++){
+		for(i = 0; i < otherSnake.pos.length; i++){
 			if(snake.pos[0].x == otherSnake.pos[i].x && snake.pos[0].y == otherSnake.pos[i].y){
 				clearInterval(interval);
 				gameOver = true;
@@ -174,7 +180,6 @@ function init(){
 	canvas = document.getElementById("gameArea");
 	ctx = canvas.getContext("2d");
 	squareSize = 10;
-	score = 0;
 	screenWidth = 600;
 	screenHeight = 400;
 	snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
@@ -221,10 +226,11 @@ function start(){
 //the function that is looped
 function main(){
 	moveSnake(snakes);
-	write(snake1);
-	draw(snakes);
+	//write(snake1);
 	checkCol(snake1);
-	checkCol(snake2);
+	if(twoPlayers)
+		checkCol(snake2);
+	draw(snakes);
 	if(gameOver)
 		init();
 }
