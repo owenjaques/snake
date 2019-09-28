@@ -1,10 +1,11 @@
-var canvas, ctx, dx, dy, squareSize, screenWidth, screenHeight, food, interval, started, gameOver, snake1, snake2, snakes, twoPlayers, twoPlayersNextGame;
+var canvas, ctx, dx, dy, squareSize, screenWidth, screenHeight, food, interval, started, game_over, snake1, snake2, snakes, twoPlayers, twoPlayersNextGame;
 
 function Snake(pos){
 	this.pos = pos;
 	this.dx = 0;
 	this.dy = -10;
 	this.score = 0;
+	this.dead = false;
 }
 
 //draws on canvas
@@ -127,7 +128,7 @@ function createFood(snakes){
 	food.y = y;
 }
 
-//writes to the html
+//writes to the html for testing purposes
 function write(snake){
 	var ele = document.getElementById("snakex");
 	ele.innerHTML = snake.pos[0].x;
@@ -143,14 +144,16 @@ function checkCol(snake){
 	//checks for collision with wall
 	if(snake.pos[0].x == -10 || snake.pos[0].x == screenWidth || snake.pos[0].y == -10 || snake.pos[0].y == screenHeight){
 		clearInterval(interval);
-		gameOver = true;
+		game_over = true;
+		snake.dead = true;
 		return;
 	}
 	//checks for collision with self
 	for(i = 1; i < snake.pos.length; i++){
 		if(snake.pos[0].x == snake.pos[i].x && snake.pos[0].y == snake.pos[i].y){
 			clearInterval(interval);
-			gameOver = true;
+			game_over = true;
+			snake.dead = true;
 			return;
 		}
 	}
@@ -161,7 +164,8 @@ function checkCol(snake){
 		for(i = 0; i < otherSnake.pos.length; i++){
 			if(snake.pos[0].x == otherSnake.pos[i].x && snake.pos[0].y == otherSnake.pos[i].y){
 				clearInterval(interval);
-				gameOver = true;
+				game_over = true;
+				snake.dead = true;
 				return;
 			}
 		}
@@ -177,6 +181,7 @@ function displayMessage(message){
 	ctx.strokeText(message, 25, screenHeight/2);
 }
 
+//first function that is called to initialize all values
 function init(){
 	canvas = document.getElementById("gameArea");
 	ctx = canvas.getContext("2d");
@@ -186,25 +191,32 @@ function init(){
 	snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
 	snakes = [snake1];
 	food = {x: randCoor(screenWidth), y: randCoor(screenHeight)};
-	if(gameOver){
-		displayMessage("Game Over - Press any key to Restart");
-		//waits for 0.6 seconds to avoid immidiatly restarting if keys are accidentaly pressed
-		setTimeout(function() {started = false;}, 600);
+	draw(snakes);
+	displayMessage("Press any key to Start");
+	started = false;
+}
+
+//a helper function to initialize the snakes
+//accepts the number of snakes wanted 1 or 2
+function initSnakes(num){
+	if(num == 1){
+		snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
+		snakes = [snake1];
 	}
-	else {
-		draw(snakes);
-		displayMessage("Press any key to Start");
-		started = false;
+	else if(num == 2){
+		snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
+		snake2 = new Snake([{x:350, y:250}, {x:350, y:260}, {x:350, y:270}, {x:350, y:280}]);
+		snakes = [snake1, snake2];
 	}
-	gameOver = false;
 }
 
 function start(){
 	//so that the interval is not set multiple times making it faster and faster
-	twoPlayers = (twoPlayersNextGame) ? true : false;
 	if(!started){
+		twoPlayers = (twoPlayersNextGame) ? true : false;
+		food = {x: randCoor(screenWidth), y: randCoor(screenHeight)};
+		snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
 		if(twoPlayers){
-			snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
 			snake2 = new Snake([{x:350, y:250}, {x:350, y:260}, {x:350, y:270}, {x:350, y:280}]);
 			snakes = [snake1, snake2];
 			draw(snakes);
@@ -233,20 +245,33 @@ function start(){
 
 }
 
+function gameOver(){
+	if(twoPlayers){
+		if(snake1.dead == true)
+			displayMessage("P1 Died - Press any key to Restart");
+		else
+			displayMessage("P2 Died - Press any key to Restart");
+	}
+	else
+		displayMessage("Game Over - Press any key to Restart");
+	//waits for 0.6 seconds to avoid immidiatly restarting if keys are accidentaly pressed
+	setTimeout(function() {started = false;}, 600);
+	game_over = false;
+}
+
 //the function that is looped
 function main(){
 	moveSnake(snakes);
-	//write(snake1);
 	checkCol(snake1);
 	if(twoPlayers)
 		checkCol(snake2);
 	draw(snakes);
-	if(gameOver)
-		init();
+	if(game_over)
+		gameOver();
 }
 
-init();
-
+//a function that deals with when the players button is clicked
+//sets a dummy variable if clicked during a game
 document.getElementById("players").onclick = function (){
 	if(twoPlayersNextGame){
 		twoPlayersNextGame = false;
@@ -268,8 +293,9 @@ document.getElementById("players").onclick = function (){
 			displayMessage("Press any key to Start");
 		}
 	}
-	
 }
+
+init();
 
 //if a key is pressed the game starts or restarts
 document.body.onkeydown =  start;
