@@ -7,6 +7,8 @@ function Snake(pos){
 	this.dy = -square_size;
 	this.score = 0;
 	this.dead = false;
+	//stops annoying bug where spinning around too quick cause a collision with self
+	this.got_direction = true;
 }
 
 //draws on canvas
@@ -57,6 +59,9 @@ function moveSnakes(){
 		else {
 			snakes[k].pos.pop();
 		}
+		
+		//resests got direction to false allowing the player to input direction for next turn
+		snakes[k].got_direction = false;
 	}
 }
 
@@ -69,39 +74,52 @@ function getDirection(){
 	const D_KEY = 68;
 	const W_KEY = 87;
 	const S_KEY = 83;
-	var keyPressed = event.keyCode;
-	if(keyPressed == LEFT_KEY && snakes[0].dx != square_size){
-		snakes[0].dx = -square_size;
-		snakes[0].dy = 0;
-	}
-	else if(keyPressed == RIGHT_KEY && snakes[0].dx != -square_size){
-		snakes[0].dx = square_size;
-		snakes[0].dy = 0;
-	}
-	else if(keyPressed == UP_KEY && snakes[0].dy != square_size){
-		snakes[0].dx = 0;
-		snakes[0].dy = -square_size;
-	}
-	else if(keyPressed == DOWN_KEY && snakes[0].dy != -square_size){
-		snakes[0].dx = 0;
-		snakes[0].dy = square_size;
+	var key_pressed = event.keyCode;
+	if(!snake1.got_direction){
+		snake1.got_direction = true;
+		if(key_pressed == LEFT_KEY && snakes[0].dx != square_size){
+			snakes[0].dx = -square_size;
+			snakes[0].dy = 0;
+		}
+		else if(key_pressed == RIGHT_KEY && snakes[0].dx != -square_size){
+			snakes[0].dx = square_size;
+			snakes[0].dy = 0;
+		}
+		else if(key_pressed == UP_KEY && snakes[0].dy != square_size){
+			snakes[0].dx = 0;
+			snakes[0].dy = -square_size;
+		}
+		else if(key_pressed == DOWN_KEY && snakes[0].dy != -square_size){
+			snakes[0].dx = 0;
+			snakes[0].dy = square_size;
+		}
+		else {
+			//if nothing was pressd reset to false
+			snake1.got_direction = false;
+		}
 	}
 	if(two_players){
-		if(keyPressed == A_KEY && snakes[1].dx != square_size){
-			snakes[1].dx = -square_size;
-			snakes[1].dy = 0;
-		}
-		else if(keyPressed == D_KEY && snakes[1].dx != -square_size){
-			snakes[1].dx = square_size;
-			snakes[1].dy = 0;
-		}
-		else if(keyPressed == W_KEY && snakes[1].dy != square_size){
-			snakes[1].dx = 0;
-			snakes[1].dy = -square_size;
-		}
-		else if(keyPressed == S_KEY && snakes[1].dy != -square_size){
-			snakes[1].dx = 0;
-			snakes[1].dy = square_size;
+		if(!snake2.got_direction){
+			snake2.got_direction = true;
+			if(key_pressed == A_KEY && snakes[1].dx != square_size){
+				snakes[1].dx = -square_size;
+				snakes[1].dy = 0;
+			}
+			else if(key_pressed == D_KEY && snakes[1].dx != -square_size){
+				snakes[1].dx = square_size;
+				snakes[1].dy = 0;
+			}
+			else if(key_pressed == W_KEY && snakes[1].dy != square_size){
+				snakes[1].dx = 0;
+				snakes[1].dy = -square_size;
+			}
+			else if(key_pressed == S_KEY && snakes[1].dy != -square_size){
+				snakes[1].dx = 0;
+				snakes[1].dy = square_size;
+			}
+			else {
+				snake2.got_direction = false;
+			}
 		}
 	}
 }
