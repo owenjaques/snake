@@ -14,7 +14,7 @@ function Snake(pos){
 //draws on canvas
 function draw(){
 	//draws background
-	ctx.fillStyle = "aqua";
+	ctx.fillStyle = "paleturquoise";
 	ctx.strokeStyle = "grey";
 	ctx.fillRect(0, 0, screen_width, screen_height);
 	ctx.strokeRect(0, 0, screen_width, screen_height);
@@ -195,7 +195,7 @@ function checkCol(snake){
 function displayMessage(message){
 	ctx.font = "bold 30px Arial";
 	ctx.fillStyle = "white";
-	ctx.strokeStyle = "grey";
+	ctx.strokeStyle = "rebeccapurple";
 	ctx.fillText(message, 25, screen_height/2);
 	ctx.strokeText(message, 25, screen_height/2);
 }
