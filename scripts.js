@@ -184,18 +184,12 @@ function init(){
 	screenWidth = 600;
 	screenHeight = 400;
 	snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
-	if(document.getElementById("players").checked == true && !twoPlayers){
-		snake2 = new Snake([{x:350, y:250}, {x:350, y:260}, {x:350, y:270}, {x:350, y:280}]);
-		snakes = [snake1, snake2];
-		twoPlayers = true;
-	}
-	else
-		snakes = [snake1];
+	snakes = [snake1];
 	food = {x: randCoor(screenWidth), y: randCoor(screenHeight)};
 	if(gameOver){
 		displayMessage("Game Over - Press any key to Restart");
-		//waits for one second to avoid immidiatly restarting if keys are accidentaly pressed
-		setTimeout(function() {started = false;}, 1000);
+		//waits for 0.6 seconds to avoid immidiatly restarting if keys are accidentaly pressed
+		setTimeout(function() {started = false;}, 600);
 	}
 	else {
 		draw(snakes);
@@ -257,10 +251,22 @@ document.getElementById("players").onclick = function (){
 	if(twoPlayersNextGame){
 		twoPlayersNextGame = false;
 		document.getElementById("players").innerHTML = "Two Players?"
+		if(!started){
+			snakes = [snake1];
+			draw(snakes);
+			displayMessage("Press any key to Start");
+		}
 	}
 	else {
 		twoPlayersNextGame = true;
 		document.getElementById("players").innerHTML = "One Player?"
+		if(!started){
+			snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
+			snake2 = new Snake([{x:350, y:250}, {x:350, y:260}, {x:350, y:270}, {x:350, y:280}]);
+			snakes = [snake1, snake2];
+			draw(snakes);
+			displayMessage("Press any key to Start");
+		}
 	}
 	
 }
