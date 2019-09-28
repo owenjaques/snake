@@ -1,7 +1,9 @@
-var canvas, ctx, dx, dy, squareSize, score, screenWidth, screenHeight, food, interval, started, gameOver, snake1, snakes;
+var canvas, ctx, dx, dy, squareSize, score, screenWidth, screenHeight, food, interval, started, gameOver, snake1, snake2, snakes, twoPlayers;
 
 function Snake(pos){
 	this.pos = pos;
+	this.dx = 0;
+	this.dy = -10;
 }
 
 //draws on canvas
@@ -19,6 +21,10 @@ function draw(snakes){
 	ctx.fillStyle = "lightgreen";
 	ctx.strokeStyle = "darkgreen";
 	for(j = 0; j < snakes.length; j++){
+		if(j == 1){
+			ctx.fillStyle = "gold";
+			ctx.strokeStyle = "goldenrod";
+		}
 		for(i = 0; i < snakes[j].pos.length; i++){
 			ctx.fillRect(snakes[j].pos[i].x, snakes[j].pos[i].y, squareSize, squareSize);
 			ctx.strokeRect(snakes[j].pos[i].x, snakes[j].pos[i].y, squareSize, squareSize);
@@ -27,17 +33,19 @@ function draw(snakes){
 }
 
 //effectively moves the snake by adding the next location to a list array and popping the last element
-function moveSnake(snake){
-	var head = {x:snake.pos[0].x + dx, y:snake.pos[0].y + dy};
-	snake.pos.unshift(head);
+function moveSnake(snakes){
+	for(i = 0; i < snakes.length; i++){
+		var head = {x:snakes[i].pos[0].x + snakes[i].dx, y:snakes[i].pos[0].y + snakes[i].dy};
+		snakes[i].pos.unshift(head);
 
-	//if it hits food do not pop
-	if(snake.pos[0].x == food.x && snake.pos[0].y == food.y){
-		createFood(snake);
-		score++;
-	}
-	else {
-		snake.pos.pop();
+		//if it hits food do not pop
+		if(snakes[i].pos[0].x == food.x && snakes[i].pos[0].y == food.y){
+			createFood(snake1);
+			score++;
+		}
+		else {
+			snakes[i].pos.pop();
+		}
 	}
 }
 
@@ -46,22 +54,44 @@ function getDirection(){
 	const RIGHT_KEY = 39;
 	const UP_KEY = 38;
 	const DOWN_KEY = 40;
+	const A_KEY = 65;
+	const D_KEY = 68;
+	const W_KEY = 87;
+	const S_KEY = 83;
 	var keyPressed = event.keyCode;
-	if(keyPressed == LEFT_KEY && dx != 10){
-		dx = -10;
-		dy = 0;
+	if(keyPressed == LEFT_KEY && snakes[0].dx != 10){
+		snakes[0].dx = -10;
+		snakes[0].dy = 0;
 	}
-	else if(keyPressed == RIGHT_KEY && dx != -10){
-		dx = 10;
-		dy = 0;
+	else if(keyPressed == RIGHT_KEY && snakes[0].dx != -10){
+		snakes[0].dx = 10;
+		snakes[0].dy = 0;
 	}
-	else if(keyPressed == UP_KEY && dy != 10){
-		dx = 0;
-		dy = -10;
+	else if(keyPressed == UP_KEY && snakes[0].dy != 10){
+		snakes[0].dx = 0;
+		snakes[0].dy = -10;
 	}
-	else if(keyPressed == DOWN_KEY && dy != -10){
-		dx = 0;
-		dy = 10;
+	else if(keyPressed == DOWN_KEY && snakes[0].dy != -10){
+		snakes[0].dx = 0;
+		snakes[0].dy = 10;
+	}
+	if(twoPlayers){
+		if(keyPressed == A_KEY && snakes[1].dx != 10){
+			snakes[1].dx = -10;
+			snakes[1].dy = 0;
+		}
+		else if(keyPressed == D_KEY && snakes[1].dx != -10){
+			snakes[1].dx = 10;
+			snakes[1].dy = 0;
+		}
+		else if(keyPressed == W_KEY && snakes[1].dy != 10){
+			snakes[1].dx = 0;
+			snakes[1].dy = -10;
+		}
+		else if(keyPressed == S_KEY && snakes[1].dy != -10){
+			snakes[1].dx = 0;
+			snakes[1].dy = 10;
+		}
 	}
 }
 
@@ -129,12 +159,18 @@ function displayMessage(message){
 function init(){
 	canvas = document.getElementById("gameArea");
 	ctx = canvas.getContext("2d");
-	dx = squareSize = 10;
-	dy = score = 0;
+	squareSize = 10;
+	score = 0;
 	screenWidth = 600;
 	screenHeight = 400;
 	snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
-	snakes = [snake1];
+	if(document.getElementById("players").checked == true && !twoPlayers){
+		snake2 = new Snake([{x:350, y:250}, {x:350, y:260}, {x:350, y:270}, {x:350, y:280}]);
+		snakes = [snake1, snake2];
+		twoPlayers = true;
+	}
+	else
+		snakes = [snake1];
 	food = {x: randCoor(screenWidth), y: randCoor(screenHeight)};
 	if(gameOver){
 		displayMessage("Game Over - Press any key to Restart");
@@ -152,6 +188,17 @@ function init(){
 function start(){
 	//so that the interval is not set multiple times making it faster and faster
 	if(!started){
+		if(document.getElementById("players").checked == true){
+			snake2 = new Snake([{x:350, y:250}, {x:350, y:260}, {x:350, y:270}, {x:350, y:280}]);
+			snakes = [snake1, snake2];
+			draw(snakes);
+			twoPlayers = true;
+		}
+		else {
+			twoPlayers = false;
+			snakes = [snake1];
+			draw(snakes);
+		}
 		interval = setInterval(main, 60);
 		started = true;
 	}
@@ -159,7 +206,7 @@ function start(){
 
 //the function that is looped
 function main(){
-	moveSnake(snake1);
+	moveSnake(snakes);
 	write(snake1);
 	checkCol(snake1);
 	draw(snakes);
