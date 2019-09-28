@@ -292,7 +292,7 @@ function main(){
 document.getElementById("players").onclick = function (){
 	if(two_players_next_game){
 		two_players_next_game = false;
-		document.getElementById("players").innerHTML = "Two Players?"
+		document.getElementById("players").innerHTML = "Two Players"
 		if(!started){
 			initSnakes(1);
 			draw();
@@ -301,7 +301,7 @@ document.getElementById("players").onclick = function (){
 	}
 	else {
 		two_players_next_game = true;
-		document.getElementById("players").innerHTML = "One Player?"
+		document.getElementById("players").innerHTML = "One Player"
 		if(!started){
 			initSnakes(2);
 			draw();

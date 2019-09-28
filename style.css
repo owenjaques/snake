@@ -1,5 +1,5 @@
 body {
-	color: white;
+	color: mintcream;
 	background-color: rgb(41, 0, 80);
 	font-family: Arial, Helvetica, sans-serif;
 }
@@ -20,4 +20,25 @@ body {
 
 #top-bar div {
 	float: right;
+}
+
+button, select {
+	background-color: mintcream;
+	border: 0;
+	border-radius: 8px;
+	color: rgb(41, 0, 80);;
+}
+
+button:focus, select:focus {
+    outline-width: 0;
+}
+
+a {
+	color: mintcream;
+	text-decoration: none;
+}
+
+a:hover {
+	color: mintcream;
+	text-decoration: underline;
 }
