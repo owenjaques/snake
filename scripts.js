@@ -40,7 +40,7 @@ function moveSnake(snakes){
 
 		//if it hits food do not pop
 		if(snakes[i].pos[0].x == food.x && snakes[i].pos[0].y == food.y){
-			createFood(snake1);
+			createFood(snakes);
 			score++;
 		}
 		else {
@@ -102,14 +102,16 @@ function randCoor(size){
 	return Math.round((Math.random() * (size - squareSize)) / 10) * 10;
 }
 
-function createFood(snake){
+function createFood(snakes){
 	var x = randCoor(screenWidth);
 	var y = randCoor(screenHeight);
 	//checks to make sure its not spawning food where snake is
-	for(i = 0; i < snake.pos.length; i++){
-		if(x == snake.pos[i].x && y == snake.pos[i].y){
-			x = randCoor(screenWidth);
-			y = randCoor(screenHeight);
+	for(j = 0; j < snakes.length; j++){
+		for(i = 0; i < snakes[j].pos.length; i++){
+			if(x == snakes[j].pos[i].x && y == snakes[j].pos[i].y){
+				x = randCoor(screenWidth);
+				y = randCoor(screenHeight);
+			}
 		}
 	}
 	food.x = x;
@@ -138,11 +140,23 @@ function checkCol(snake){
 		return;
 	}
 	//checks for collision with self
-	for(i = 1; i < snake.length; i++){
-		if(snake[0].x == snake[i].x && snake[0].y == snake[i].y){
+	for(i = 1; i < snake.pos.length; i++){
+		if(snake.pos[0].x == snake.pos[i].x && snake.pos[0].y == snake.pos[i].y){
 			clearInterval(interval);
 			gameOver = true;
 			return;
+		}
+	}
+	//checks for collision with other snake
+	if(twoPlayers){
+		//figures out which snake called the function
+		otherSnake = (snake == snake1) ? snake2 : snake1;
+		for(i = 1; i < otherSnake.pos.length; i++){
+			if(snake.pos[0].x == otherSnake.pos[i].x && snake.pos[0].y == otherSnake.pos[i].y){
+				clearInterval(interval);
+				gameOver = true;
+				return;
+			}
 		}
 	}
 }
@@ -199,7 +213,7 @@ function start(){
 			snakes = [snake1];
 			draw(snakes);
 		}
-		interval = setInterval(main, 60);
+		interval = setInterval(main, 180);
 		started = true;
 	}
 }
@@ -208,8 +222,9 @@ function start(){
 function main(){
 	moveSnake(snakes);
 	write(snake1);
-	checkCol(snake1);
 	draw(snakes);
+	checkCol(snake1);
+	checkCol(snake2);
 	if(gameOver)
 		init();
 }
