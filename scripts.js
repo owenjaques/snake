@@ -1,5 +1,6 @@
-var canvas, ctx, dx, dy, squareSize, screenWidth, screenHeight, food, interval, started, game_over, snake1, snake2, snakes, twoPlayers, twoPlayersNextGame;
+var canvas, ctx, squareSize, screenWidth, screenHeight, food, interval, started, game_over, snake1, snake2, snakes, twoPlayers, twoPlayersNextGame;
 
+//the snake object
 function Snake(pos){
 	this.pos = pos;
 	this.dx = 0;
@@ -188,8 +189,7 @@ function init(){
 	squareSize = 10;
 	screenWidth = 600;
 	screenHeight = 400;
-	snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
-	snakes = [snake1];
+	initSnakes(1);
 	food = {x: randCoor(screenWidth), y: randCoor(screenHeight)};
 	draw(snakes);
 	displayMessage("Press any key to Start");
@@ -210,19 +210,18 @@ function initSnakes(num){
 	}
 }
 
+//the function that is called every time a new game is started
 function start(){
 	//so that the interval is not set multiple times making it faster and faster
 	if(!started){
 		twoPlayers = (twoPlayersNextGame) ? true : false;
 		food = {x: randCoor(screenWidth), y: randCoor(screenHeight)};
-		snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
 		if(twoPlayers){
-			snake2 = new Snake([{x:350, y:250}, {x:350, y:260}, {x:350, y:270}, {x:350, y:280}]);
-			snakes = [snake1, snake2];
+			initSnakes(2);
 			draw(snakes);
 		}
 		else {
-			snakes = [snake1];
+			initSnakes(1);
 			draw(snakes);
 		}
 		dif = document.getElementById("difficulty").value;
@@ -277,7 +276,7 @@ document.getElementById("players").onclick = function (){
 		twoPlayersNextGame = false;
 		document.getElementById("players").innerHTML = "Two Players?"
 		if(!started){
-			snakes = [snake1];
+			initSnakes(1);
 			draw(snakes);
 			displayMessage("Press any key to Start");
 		}
@@ -286,9 +285,7 @@ document.getElementById("players").onclick = function (){
 		twoPlayersNextGame = true;
 		document.getElementById("players").innerHTML = "One Player?"
 		if(!started){
-			snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
-			snake2 = new Snake([{x:350, y:250}, {x:350, y:260}, {x:350, y:270}, {x:350, y:280}]);
-			snakes = [snake1, snake2];
+			initSnakes(2);
 			draw(snakes);
 			displayMessage("Press any key to Start");
 		}
@@ -299,5 +296,3 @@ init();
 
 //if a key is pressed the game starts or restarts
 document.body.onkeydown =  start;
-
-
