@@ -1,4 +1,4 @@
-var canvas, ctx, dx, dy, squareSize, screenWidth, screenHeight, food, interval, started, gameOver, snake1, snake2, snakes, twoPlayers;
+var canvas, ctx, dx, dy, squareSize, screenWidth, screenHeight, food, interval, started, gameOver, snake1, snake2, snakes, twoPlayers, twoPlayersNextGame;
 
 function Snake(pos){
 	this.pos = pos;
@@ -207,15 +207,15 @@ function init(){
 
 function start(){
 	//so that the interval is not set multiple times making it faster and faster
+	twoPlayers = (twoPlayersNextGame) ? true : false;
 	if(!started){
-		if(document.getElementById("players").checked == true){
+		if(twoPlayers){
+			snake1 = new Snake([{x:250, y:250}, {x:250, y:260}, {x:250, y:270}, {x:250, y:280}]);
 			snake2 = new Snake([{x:350, y:250}, {x:350, y:260}, {x:350, y:270}, {x:350, y:280}]);
 			snakes = [snake1, snake2];
 			draw(snakes);
-			twoPlayers = true;
 		}
 		else {
-			twoPlayers = false;
 			snakes = [snake1];
 			draw(snakes);
 		}
@@ -252,6 +252,18 @@ function main(){
 }
 
 init();
+
+document.getElementById("players").onclick = function (){
+	if(twoPlayersNextGame){
+		twoPlayersNextGame = false;
+		document.getElementById("players").innerHTML = "Two Players?"
+	}
+	else {
+		twoPlayersNextGame = true;
+		document.getElementById("players").innerHTML = "One Player?"
+	}
+	
+}
 
 //if a key is pressed the game starts or restarts
 document.body.onkeydown =  start;
