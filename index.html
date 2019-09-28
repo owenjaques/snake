@@ -26,18 +26,25 @@
 			<th>P1: </th>
 			<td id="score1">0</td>
 			<td>
-				<input type="checkbox" id="players" name="players" value="Bike"> Two Player?<br>
+				<input type="checkbox" id="players" name="players"> Two Players?<br>
 			</td>
 		</tr>
 		<tr>
 			<th>P2: </th>
 			<td id="score2">0</td>
+			<td>
+				<select id="difficulty">
+					<option value="normal">Normal</option>
+					<option value="easy">Easy</option>
+					<option value="hard">Hard</option>
+				</select>
+			</td>
 		</tr>
 	</table>
 	
 	<canvas id="gameArea" height="400px" width="600px"></canvas>
 
-	<table>
+	<!-- <table>
 		<tr>
 			<th></th>
 			<th>Snake </th>
@@ -53,7 +60,7 @@
 			<td id="snakey"></td>
 			<td id="foody"></td>
 		</tr>
-	</table>
+	</table> -->
 
 	<script type="text/javascript" src="scripts.js"></script>
 	

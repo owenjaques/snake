@@ -218,9 +218,24 @@ function start(){
 			snakes = [snake1];
 			draw(snakes);
 		}
-		interval = setInterval(main, 180);
+		dif = document.getElementById("difficulty").value;
+		if(dif == "easy")
+			interval = setInterval(main, 180);
+		else if(dif == "normal")
+			interval = setInterval(main, 100);
+		else if(dif == "hard")
+			interval = setInterval(main, 60);
+		document.getElementById("difficulty").value = dif;
+		document.getElementById("difficulty").blur();
 		started = true;
 	}
+	//sort of a stupid fix but I was having the problem where if you selected the difficulty then immidiatly hit another key the
+	//select would still be in focus and change the difficulty so instead of stopping it from happening I just changed it back
+	document.body.onkeyup =  function (){
+		document.getElementById("difficulty").value = dif;
+		document.getElementById("difficulty").blur();
+	}
+
 }
 
 //the function that is looped
@@ -238,6 +253,6 @@ function main(){
 init();
 
 //if a key is pressed the game starts or restarts
-document.body.onkeyup =  start;
+document.body.onkeydown =  start;
 
 
