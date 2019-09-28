@@ -1,25 +1,25 @@
-var canvas, ctx, squareSize, screenWidth, screenHeight, food, interval, started, game_over, snake1, snake2, snakes, twoPlayers, twoPlayersNextGame;
+var canvas, ctx, square_size, screen_width, screen_height, food, interval, started, game_over, snake1, snake2, snakes, two_players, two_players_next_game;
 
 //the snake object
 function Snake(pos){
 	this.pos = pos;
 	this.dx = 0;
-	this.dy = -10;
+	this.dy = -square_size;
 	this.score = 0;
 	this.dead = false;
 }
 
 //draws on canvas
-function draw(snakes){
+function draw(){
 	//draws background
 	ctx.fillStyle = "aqua";
 	ctx.strokeStyle = "grey";
-	ctx.fillRect(0, 0, screenWidth, screenHeight);
-	ctx.strokeRect(0, 0, screenWidth, screenHeight);
+	ctx.fillRect(0, 0, screen_width, screen_height);
+	ctx.strokeRect(0, 0, screen_width, screen_height);
 	//draws food
 	ctx.fillStyle = "red";
-	ctx.fillRect(food.x, food.y, squareSize, squareSize);
-	ctx.strokeRect(food.x, food.y, squareSize, squareSize);
+	ctx.fillRect(food.x, food.y, square_size, square_size);
+	ctx.strokeRect(food.x, food.y, square_size, square_size);
 	//draws snake
 	ctx.fillStyle = "lightgreen";
 	ctx.strokeStyle = "darkgreen";
@@ -29,8 +29,8 @@ function draw(snakes){
 			ctx.strokeStyle = "goldenrod";
 		}
 		for(i = 0; i < snakes[j].pos.length; i++){
-			ctx.fillRect(snakes[j].pos[i].x, snakes[j].pos[i].y, squareSize, squareSize);
-			ctx.strokeRect(snakes[j].pos[i].x, snakes[j].pos[i].y, squareSize, squareSize);
+			ctx.fillRect(snakes[j].pos[i].x, snakes[j].pos[i].y, square_size, square_size);
+			ctx.strokeRect(snakes[j].pos[i].x, snakes[j].pos[i].y, square_size, square_size);
 		}
 	}
 	//writes scores
@@ -43,7 +43,7 @@ function draw(snakes){
 }
 
 //effectively moves the snake by adding the next location to a list array and popping the last element
-function moveSnake(snakes){
+function moveSnakes(){
 	//had some wierd counting issue where I was getting set to 5 when the create food function was called so I switched it to k
 	for(k = 0; k < snakes.length; k++){
 		var head = {x:snakes[k].pos[0].x + snakes[k].dx, y:snakes[k].pos[0].y + snakes[k].dy};
@@ -51,7 +51,7 @@ function moveSnake(snakes){
 
 		//if it hits food do not pop
 		if(snakes[k].pos[0].x == food.x && snakes[k].pos[0].y == food.y){
-			createFood(snakes);
+			createFood();
 			snakes[k].score++;
 		}
 		else {
@@ -70,38 +70,38 @@ function getDirection(){
 	const W_KEY = 87;
 	const S_KEY = 83;
 	var keyPressed = event.keyCode;
-	if(keyPressed == LEFT_KEY && snakes[0].dx != 10){
-		snakes[0].dx = -10;
+	if(keyPressed == LEFT_KEY && snakes[0].dx != square_size){
+		snakes[0].dx = -square_size;
 		snakes[0].dy = 0;
 	}
-	else if(keyPressed == RIGHT_KEY && snakes[0].dx != -10){
-		snakes[0].dx = 10;
+	else if(keyPressed == RIGHT_KEY && snakes[0].dx != -square_size){
+		snakes[0].dx = square_size;
 		snakes[0].dy = 0;
 	}
-	else if(keyPressed == UP_KEY && snakes[0].dy != 10){
+	else if(keyPressed == UP_KEY && snakes[0].dy != square_size){
 		snakes[0].dx = 0;
-		snakes[0].dy = -10;
+		snakes[0].dy = -square_size;
 	}
-	else if(keyPressed == DOWN_KEY && snakes[0].dy != -10){
+	else if(keyPressed == DOWN_KEY && snakes[0].dy != -square_size){
 		snakes[0].dx = 0;
-		snakes[0].dy = 10;
+		snakes[0].dy = square_size;
 	}
-	if(twoPlayers){
-		if(keyPressed == A_KEY && snakes[1].dx != 10){
-			snakes[1].dx = -10;
+	if(two_players){
+		if(keyPressed == A_KEY && snakes[1].dx != square_size){
+			snakes[1].dx = -square_size;
 			snakes[1].dy = 0;
 		}
-		else if(keyPressed == D_KEY && snakes[1].dx != -10){
-			snakes[1].dx = 10;
+		else if(keyPressed == D_KEY && snakes[1].dx != -square_size){
+			snakes[1].dx = square_size;
 			snakes[1].dy = 0;
 		}
-		else if(keyPressed == W_KEY && snakes[1].dy != 10){
+		else if(keyPressed == W_KEY && snakes[1].dy != square_size){
 			snakes[1].dx = 0;
-			snakes[1].dy = -10;
+			snakes[1].dy = -square_size;
 		}
-		else if(keyPressed == S_KEY && snakes[1].dy != -10){
+		else if(keyPressed == S_KEY && snakes[1].dy != -square_size){
 			snakes[1].dx = 0;
-			snakes[1].dy = 10;
+			snakes[1].dy = square_size;
 		}
 	}
 }
@@ -110,18 +110,18 @@ document.addEventListener("keydown", getDirection);
 
 //generates a random number within the screen size given that is a multiple of ten
 function randCoor(size){
-	return Math.round((Math.random() * (size - squareSize)) / 10) * 10;
+	return Math.round((Math.random() * (size - square_size)) / square_size) * square_size;
 }
 
-function createFood(snakes){
-	var x = randCoor(screenWidth);
-	var y = randCoor(screenHeight);
+function createFood(){
+	var x = randCoor(screen_width);
+	var y = randCoor(screen_height);
 	//checks to make sure its not spawning food where snake is
 	for(j = 0; j < snakes.length; j++){
 		for(i = 0; i < snakes[j].pos.length; i++){
 			if(x == snakes[j].pos[i].x && y == snakes[j].pos[i].y){
-				x = randCoor(screenWidth);
-				y = randCoor(screenHeight);
+				x = randCoor(screen_width);
+				y = randCoor(screen_height);
 			}
 		}
 	}
@@ -143,7 +143,7 @@ function write(snake){
 
 function checkCol(snake){
 	//checks for collision with wall
-	if(snake.pos[0].x == -10 || snake.pos[0].x == screenWidth || snake.pos[0].y == -10 || snake.pos[0].y == screenHeight){
+	if(snake.pos[0].x == -square_size || snake.pos[0].x == screen_width || snake.pos[0].y == -square_size || snake.pos[0].y == screen_height){
 		clearInterval(interval);
 		game_over = true;
 		snake.dead = true;
@@ -159,7 +159,7 @@ function checkCol(snake){
 		}
 	}
 	//checks for collision with other snake
-	if(twoPlayers){
+	if(two_players){
 		//figures out which snake called the function
 		otherSnake = (snake == snake1) ? snake2 : snake1;
 		for(i = 0; i < otherSnake.pos.length; i++){
@@ -178,20 +178,20 @@ function displayMessage(message){
 	ctx.font = "bold 30px Arial";
 	ctx.fillStyle = "white";
 	ctx.strokeStyle = "grey";
-	ctx.fillText(message, 25, screenHeight/2);
-	ctx.strokeText(message, 25, screenHeight/2);
+	ctx.fillText(message, 25, screen_height/2);
+	ctx.strokeText(message, 25, screen_height/2);
 }
 
 //first function that is called to initialize all values
 function init(){
 	canvas = document.getElementById("gameArea");
 	ctx = canvas.getContext("2d");
-	squareSize = 10;
-	screenWidth = 600;
-	screenHeight = 400;
+	square_size = 10;
+	screen_width = 600;
+	screen_height = 400;
 	initSnakes(1);
-	food = {x: randCoor(screenWidth), y: randCoor(screenHeight)};
-	draw(snakes);
+	food = {x: randCoor(screen_width), y: randCoor(screen_height)};
+	draw();
 	displayMessage("Press any key to Start");
 	started = false;
 }
@@ -214,15 +214,15 @@ function initSnakes(num){
 function start(){
 	//so that the interval is not set multiple times making it faster and faster
 	if(!started){
-		twoPlayers = (twoPlayersNextGame) ? true : false;
-		food = {x: randCoor(screenWidth), y: randCoor(screenHeight)};
-		if(twoPlayers){
+		two_players = (two_players_next_game) ? true : false;
+		food = {x: randCoor(screen_width), y: randCoor(screen_height)};
+		if(two_players){
 			initSnakes(2);
-			draw(snakes);
+			draw();
 		}
 		else {
 			initSnakes(1);
-			draw(snakes);
+			draw();
 		}
 		dif = document.getElementById("difficulty").value;
 		if(dif == "easy")
@@ -245,7 +245,7 @@ function start(){
 }
 
 function gameOver(){
-	if(twoPlayers){
+	if(two_players){
 		if(snake1.dead == true)
 			displayMessage("P1 Died - Press any key to Restart");
 		else
@@ -260,11 +260,11 @@ function gameOver(){
 
 //the function that is looped
 function main(){
-	moveSnake(snakes);
+	moveSnakes();
 	checkCol(snake1);
-	if(twoPlayers)
+	if(two_players)
 		checkCol(snake2);
-	draw(snakes);
+	draw();
 	if(game_over)
 		gameOver();
 }
@@ -272,21 +272,21 @@ function main(){
 //a function that deals with when the players button is clicked
 //sets a dummy variable if clicked during a game
 document.getElementById("players").onclick = function (){
-	if(twoPlayersNextGame){
-		twoPlayersNextGame = false;
+	if(two_players_next_game){
+		two_players_next_game = false;
 		document.getElementById("players").innerHTML = "Two Players?"
 		if(!started){
 			initSnakes(1);
-			draw(snakes);
+			draw();
 			displayMessage("Press any key to Start");
 		}
 	}
 	else {
-		twoPlayersNextGame = true;
+		two_players_next_game = true;
 		document.getElementById("players").innerHTML = "One Player?"
 		if(!started){
 			initSnakes(2);
-			draw(snakes);
+			draw();
 			displayMessage("Press any key to Start");
 		}
 	}
