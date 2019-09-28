@@ -31,6 +31,13 @@ function draw(snakes){
 			ctx.strokeRect(snakes[j].pos[i].x, snakes[j].pos[i].y, squareSize, squareSize);
 		}
 	}
+	//writes scores
+	ele = document.getElementById("score1");
+	ele.innerHTML = snake1.score;
+	if(snake2){
+		ele = document.getElementById("score2");
+		ele.innerHTML = snake2.score;
+	}
 }
 
 //effectively moves the snake by adding the next location to a list array and popping the last element
@@ -130,12 +137,6 @@ function write(snake){
 	ele.innerHTML = food.x;
 	ele = document.getElementById("foody");
 	ele.innerHTML = food.y;
-	ele = document.getElementById("score1");
-	ele.innerHTML = snake1.score;
-	if(snake2){
-		ele = document.getElementById("score2");
-		ele.innerHTML = snake2.score;
-	}
 }
 
 function checkCol(snake){

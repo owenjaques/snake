@@ -2,67 +2,58 @@
 <html lang="en">
 
 <head>
-	<title>Snake!!!</title>
+	<title>Snake</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
-<style>
-	body {
-		padding-left: 30px;
-		color: white;
-		background-color: rgb(41, 0, 80);
-		font-family: Arial, Helvetica, sans-serif;
-	}
-
-	th {
-		padding-right: 5px;
-	}
-</style>
-
 <body>
-	<h2 id="gameOver">Snake!!!</h2>
+	<div class="container">
+		<h2 id="gameOver">Snake</h2>
 
-	<table>
-		<tr>
-			<th>P1: </th>
-			<td id="score1">0</td>
-			<td>
-				<input type="checkbox" id="players" name="players"> Two Players?<br>
-			</td>
-		</tr>
-		<tr>
-			<th>P2: </th>
-			<td id="score2">0</td>
-			<td>
+		<div id="top-bar">
+			<table>
+				<tr>
+					<th>P1: </th>
+					<td id="score1">0</td>
+					<th>P2: </th>
+					<td id="score2">0</td>
+				</tr>
+			</table>
+
+			<div>
+				<button id="players"> Two Players?</button>
+
 				<select id="difficulty">
 					<option value="normal">Normal</option>
 					<option value="easy">Easy</option>
 					<option value="hard">Hard</option>
 				</select>
-			</td>
-		</tr>
-	</table>
-	
-	<canvas id="gameArea" height="400px" width="600px"></canvas>
+			</div>
+		</div>
+		
+		<canvas id="gameArea" height="400px" width="600px"></canvas>
 
-	<!-- <table>
-		<tr>
-			<th></th>
-			<th>Snake </th>
-			<th>Food </th>
-		</tr>
-		<tr>
-			<th>x: </th>
-			<td id="snakex"></td>
-			<td id="foodx"></td>
-		</tr>
-		<tr>
-			<th>y: </th>
-			<td id="snakey"></td>
-			<td id="foody"></td>
-		</tr>
-	</table> -->
+		<!-- <table>
+			<tr>
+				<th></th>
+				<th>Snake </th>
+				<th>Food </th>
+			</tr>
+			<tr>
+				<th>x: </th>
+				<td id="snakex"></td>
+				<td id="foodx"></td>
+			</tr>
+			<tr>
+				<th>y: </th>
+				<td id="snakey"></td>
+				<td id="foody"></td>
+			</tr>
+		</table> -->
 
-	<script type="text/javascript" src="scripts.js"></script>
+		<script type="text/javascript" src="scripts.js"></script>
+
+	</div>
 	
 </body>
 
