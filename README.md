@@ -1,6 +1,9 @@
 # snake
-A very simple snake game.
-My first real attempt at javascript.
+A very simple snake game played in the html canvas.
+My first project using javascript.
+
+Upgraded September 2019 to support two players.
+
+![two player start screen](snake.png)
 
 Owen Jaques
-June 30th 2019
